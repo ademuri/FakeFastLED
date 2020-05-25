@@ -47,7 +47,6 @@
 //
 // If this platform is a new microcontroller, see "PORTING.md".
 //
-#error "This platform isn't recognized by FastLED... yet.  See comments in FastLED/led_sysdefs.h for options."
 #endif
 
 #ifndef FASTLED_NAMESPACE_BEGIN

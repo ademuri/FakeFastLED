@@ -3,9 +3,9 @@
 
 #include "FastLED.h"
 
-#ifndef __INC_LED_SYSDEFS_H
-#error WTH?  led_sysdefs needs to be included first
-#endif
+//#ifndef __INC_LED_SYSDEFS_H
+//#error WTH?  led_sysdefs needs to be included first
+//#endif
 
 FASTLED_NAMESPACE_BEGIN
 

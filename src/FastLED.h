@@ -6,6 +6,12 @@
 #define FASTLED_NAMESPACE_BEGIN
 #define FASTLED_NAMESPACE_END
 
-#include "colorutils.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+
 #include "pixeltypes.h"
+#include "colorutils.h"
+
+#pragma GCC diagnostic pop
+
 #endif

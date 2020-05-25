@@ -4,9 +4,8 @@
 
 FASTLED_NAMESPACE_BEGIN
 
-#define RAND16_SEED  1337
+#define RAND16_SEED 1337
 uint16_t rand16seed = RAND16_SEED;
-
 
 // memset8, memcpy8, memmove8:
 //  optimized avr replacements for the standard "C" library
@@ -29,103 +28,88 @@ uint16_t rand16seed = RAND16_SEED;
 #if defined(__AVR__)
 extern "C" {
 //__attribute__ ((noinline))
-void * memset8 ( void * ptr, uint8_t val, uint16_t num )
-{
-    asm volatile(
-         "  movw r26, %[ptr]        \n\t"
-         "  sbrs %A[num], 0         \n\t"
-         "  rjmp Lseteven_%=        \n\t"
-         "  rjmp Lsetodd_%=         \n\t"
-         "Lsetloop_%=:              \n\t"
-         "  st X+, %[val]           \n\t"
-         "Lsetodd_%=:               \n\t"
-         "  st X+, %[val]           \n\t"
-         "Lseteven_%=:              \n\t"
-         "  subi %A[num], 2         \n\t"
-         "  brcc Lsetloop_%=        \n\t"
-         "  sbci %B[num], 0         \n\t"
-         "  brcc Lsetloop_%=        \n\t"
-         : [num] "+r" (num)
-         : [ptr]  "r" (ptr),
-           [val]  "r" (val)
-         : "memory"
-         );
-    return ptr;
+void* memset8(void* ptr, uint8_t val, uint16_t num) {
+  asm volatile(
+      "  movw r26, %[ptr]        \n\t"
+      "  sbrs %A[num], 0         \n\t"
+      "  rjmp Lseteven_%=        \n\t"
+      "  rjmp Lsetodd_%=         \n\t"
+      "Lsetloop_%=:              \n\t"
+      "  st X+, %[val]           \n\t"
+      "Lsetodd_%=:               \n\t"
+      "  st X+, %[val]           \n\t"
+      "Lseteven_%=:              \n\t"
+      "  subi %A[num], 2         \n\t"
+      "  brcc Lsetloop_%=        \n\t"
+      "  sbci %B[num], 0         \n\t"
+      "  brcc Lsetloop_%=        \n\t"
+      : [num] "+r"(num)
+      : [ptr] "r"(ptr), [val] "r"(val)
+      : "memory");
+  return ptr;
 }
 
-
+//__attribute__ ((noinline))
+void* memcpy8(void* dst, const void* src, uint16_t num) {
+  asm volatile(
+      "  movw r30, %[src]        \n\t"
+      "  movw r26, %[dst]        \n\t"
+      "  sbrs %A[num], 0         \n\t"
+      "  rjmp Lcpyeven_%=        \n\t"
+      "  rjmp Lcpyodd_%=         \n\t"
+      "Lcpyloop_%=:              \n\t"
+      "  ld __tmp_reg__, Z+      \n\t"
+      "  st X+, __tmp_reg__      \n\t"
+      "Lcpyodd_%=:               \n\t"
+      "  ld __tmp_reg__, Z+      \n\t"
+      "  st X+, __tmp_reg__      \n\t"
+      "Lcpyeven_%=:              \n\t"
+      "  subi %A[num], 2         \n\t"
+      "  brcc Lcpyloop_%=        \n\t"
+      "  sbci %B[num], 0         \n\t"
+      "  brcc Lcpyloop_%=        \n\t"
+      : [num] "+r"(num)
+      : [src] "r"(src), [dst] "r"(dst)
+      : "memory");
+  return dst;
+}
 
 //__attribute__ ((noinline))
-void * memcpy8 ( void * dst, const void* src, uint16_t num )
-{
+void* memmove8(void* dst, const void* src, uint16_t num) {
+  if (src > dst) {
+    // if src > dst then we can use the forward-stepping memcpy8
+    return memcpy8(dst, src, num);
+  } else {
+    // if src < dst then we have to step backward:
+    dst = (char*)dst + num;
+    src = (char*)src + num;
     asm volatile(
-         "  movw r30, %[src]        \n\t"
-         "  movw r26, %[dst]        \n\t"
-         "  sbrs %A[num], 0         \n\t"
-         "  rjmp Lcpyeven_%=        \n\t"
-         "  rjmp Lcpyodd_%=         \n\t"
-         "Lcpyloop_%=:              \n\t"
-         "  ld __tmp_reg__, Z+      \n\t"
-         "  st X+, __tmp_reg__      \n\t"
-         "Lcpyodd_%=:               \n\t"
-         "  ld __tmp_reg__, Z+      \n\t"
-         "  st X+, __tmp_reg__      \n\t"
-         "Lcpyeven_%=:              \n\t"
-         "  subi %A[num], 2         \n\t"
-         "  brcc Lcpyloop_%=        \n\t"
-         "  sbci %B[num], 0         \n\t"
-         "  brcc Lcpyloop_%=        \n\t"
-         : [num] "+r" (num)
-         : [src] "r" (src),
-           [dst] "r" (dst)
-         : "memory"
-         );
+        "  movw r30, %[src]        \n\t"
+        "  movw r26, %[dst]        \n\t"
+        "  sbrs %A[num], 0         \n\t"
+        "  rjmp Lmoveven_%=        \n\t"
+        "  rjmp Lmovodd_%=         \n\t"
+        "Lmovloop_%=:              \n\t"
+        "  ld __tmp_reg__, -Z      \n\t"
+        "  st -X, __tmp_reg__      \n\t"
+        "Lmovodd_%=:               \n\t"
+        "  ld __tmp_reg__, -Z      \n\t"
+        "  st -X, __tmp_reg__      \n\t"
+        "Lmoveven_%=:              \n\t"
+        "  subi %A[num], 2         \n\t"
+        "  brcc Lmovloop_%=        \n\t"
+        "  sbci %B[num], 0         \n\t"
+        "  brcc Lmovloop_%=        \n\t"
+        : [num] "+r"(num)
+        : [src] "r"(src), [dst] "r"(dst)
+        : "memory");
     return dst;
+  }
 }
-
-//__attribute__ ((noinline))
-void * memmove8 ( void * dst, const void* src, uint16_t num )
-{
-    if( src > dst) {
-        // if src > dst then we can use the forward-stepping memcpy8
-        return memcpy8( dst, src, num);
-    } else {
-        // if src < dst then we have to step backward:
-        dst = (char*)dst + num;
-        src = (char*)src + num;
-        asm volatile(
-             "  movw r30, %[src]        \n\t"
-             "  movw r26, %[dst]        \n\t"
-             "  sbrs %A[num], 0         \n\t"
-             "  rjmp Lmoveven_%=        \n\t"
-             "  rjmp Lmovodd_%=         \n\t"
-             "Lmovloop_%=:              \n\t"
-             "  ld __tmp_reg__, -Z      \n\t"
-             "  st -X, __tmp_reg__      \n\t"
-             "Lmovodd_%=:               \n\t"
-             "  ld __tmp_reg__, -Z      \n\t"
-             "  st -X, __tmp_reg__      \n\t"
-             "Lmoveven_%=:              \n\t"
-             "  subi %A[num], 2         \n\t"
-             "  brcc Lmovloop_%=        \n\t"
-             "  sbci %B[num], 0         \n\t"
-             "  brcc Lmovloop_%=        \n\t"
-             : [num] "+r" (num)
-             : [src] "r" (src),
-               [dst] "r" (dst)
-             : "memory"
-             );
-        return dst;
-    }
-}
-
 
 } /* end extern "C" */
 
 #endif /* AVR */
-
-
-
 
 #if 0
 // TEST / VERIFICATION CODE ONLY BELOW THIS POINT

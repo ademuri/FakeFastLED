@@ -5,7 +5,7 @@ project(fake-fast-led CXX)
 # Generate the file needed for YCM integration
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/lib8tion)
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
 file(GLOB LIBRARY_SOURCES "src/*.cpp" "src/lib8tion/*.cpp")
 add_library(fake-fast-led ${LIBRARY_SOURCES})

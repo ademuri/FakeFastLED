@@ -26,6 +26,8 @@
 #include "platforms/arm/sam/led_sysdefs_arm_sam.h"
 #elif defined(STM32F10X_MD) || defined(__STM32F1__) || defined(STM32F2XX) || defined(STM32F1)
 #include "platforms/arm/stm32/led_sysdefs_arm_stm32.h"
+#elif defined(STM32G0xx)
+#include "platforms/arm/stm32_m0/led_sysdefs_arm_stm32_m0.h"
 #elif defined(__SAMD21G18A__) || defined(__SAMD21J18A__) || defined(__SAMD21E17A__) || defined(__SAMD21E18A__) 
 #include "platforms/arm/d21/led_sysdefs_arm_d21.h"
 #elif defined(__SAMD51G19A__) || defined(__SAMD51J19A__) || defined(__SAMD51P19A__)

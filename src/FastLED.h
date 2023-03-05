@@ -13,16 +13,16 @@
 /// * 1 digit for the major version
 /// * 3 digits for the minor version
 /// * 3 digits for the patch version
-#define FASTLED_VERSION 3005000
-#ifndef FASTLED_INTERNAL
-#  ifdef  FASTLED_SHOW_VERSION
-#    ifdef FASTLED_HAS_PRAGMA_MESSAGE
-#      pragma message "FastLED version 3.005.000"
-#    else
-#      warning FastLED version 3.005.000  (Not really a warning, just telling you here.)
-#    endif
-#  endif
-#endif
+// #define FASTLED_VERSION 3005000
+// #ifndef FASTLED_INTERNAL
+// #  ifdef  FASTLED_SHOW_VERSION
+// #    ifdef FASTLED_HAS_PRAGMA_MESSAGE
+// #      pragma message "FastLED version 3.005.000"
+// #    else
+// #      warning FastLED version 3.005.000  (Not really a warning, just telling you here.)
+// #    endif
+// #  endif
+// #endif
 
 #ifndef __PROG_TYPES_COMPAT__
 /// avr-libc define to expose __progmem__ typedefs.

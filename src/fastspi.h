@@ -152,28 +152,28 @@ class SPIOutput<SPI_DATA, SPI_CLOCK, SPI_SPEED> : public ArdunioCoreSPIOutput<SP
 #endif
 
 #else
-#  if !defined(FASTLED_INTERNAL) && !defined(FASTLED_ALL_PINS_HARDWARE_SPI)
-#    ifdef FASTLED_HAS_PRAGMA_MESSAGE
-#      pragma message "No hardware SPI pins defined.  All SPI access will default to bitbanged output"
-#    else
-#      warning "No hardware SPI pins defined.  All SPI access will default to bitbanged output"
-#    endif
-#  endif
+// #  if !defined(FASTLED_INTERNAL) && !defined(FASTLED_ALL_PINS_HARDWARE_SPI)
+// #    ifdef FASTLED_HAS_PRAGMA_MESSAGE
+// #      pragma message "No hardware SPI pins defined.  All SPI access will default to bitbanged output"
+// #    else
+// #      warning "No hardware SPI pins defined.  All SPI access will default to bitbanged output"
+// #    endif
+// #  endif
 #endif
-
+ 
 // #if defined(USART_DATA) && defined(USART_CLOCK)
 // template<uint32_t SPI_SPEED>
 // class AVRSPIOutput<USART_DATA, USART_CLOCK, SPI_SPEED> : public AVRUSARTSPIOutput<USART_DATA, USART_CLOCK, SPI_SPEED> {};
 // #endif
 
 #else
-#  if !defined(FASTLED_INTERNAL) && !defined(FASTLED_ALL_PINS_HARDWARE_SPI)
-#    ifdef FASTLED_HAS_PRAGMA_MESSAGE
-#      pragma message "Forcing software SPI - no hardware SPI for you!"
-#    else
-#      warning "Forcing software SPI - no hardware SPI for you!"
-#    endif
-#  endif
+// #  if !defined(FASTLED_INTERNAL) && !defined(FASTLED_ALL_PINS_HARDWARE_SPI)
+// #    ifdef FASTLED_HAS_PRAGMA_MESSAGE
+// #      pragma message "Forcing software SPI - no hardware SPI for you!"
+// #    else
+// #      warning "Forcing software SPI - no hardware SPI for you!"
+// #    endif
+// #  endif
 #endif
 
 FASTLED_NAMESPACE_END
